@@ -1,8 +1,7 @@
 import React from 'react';
 import { FlexPlugin } from '@twilio/flex-plugin';
 
-import CustomTaskList from './components/CustomTaskList/CustomTaskList';
-
+import ChannelCapacity from './components/ChannelCapacity/ChannelCapacity';
 const PLUGIN_NAME = 'ChannelCapacityV2Plugin';
 
 export default class ChannelCapacityV2Plugin extends FlexPlugin {
@@ -17,7 +16,8 @@ export default class ChannelCapacityV2Plugin extends FlexPlugin {
    * @param flex { typeof import('@twilio/flex-ui') }
    */
   async init(flex, manager) {
-    const options = { sortOrder: -1 };
-    flex.AgentDesktopView.Panel1.Content.add(<CustomTaskList key="ChannelCapacityV2Plugin-component" />, options);
+
+    flex.WorkerCanvas.Content.add( <ChannelCapacity key = "channel-capacity" />)
+
   }
 }
