@@ -1,8 +1,8 @@
 import React from 'react';
 import { FlexPlugin } from '@twilio/flex-plugin';
-
+import { CustomizationProvider } from '@twilio-paste/core/customization';
 import ChannelCapacity from './components/ChannelCapacity/ChannelCapacity';
-const PLUGIN_NAME = 'ChannelCapacityV2Plugin';
+import { PLUGIN_NAME } from './utils/constants';
 
 export default class ChannelCapacityV2Plugin extends FlexPlugin {
   constructor() {
@@ -16,7 +16,9 @@ export default class ChannelCapacityV2Plugin extends FlexPlugin {
    * @param flex { typeof import('@twilio/flex-ui') }
    */
   async init(flex, manager) {
-
+    flex.setProviders({
+      PasteThemeProvider: CustomizationProvider,
+    });
     flex.WorkerCanvas.Content.add( <ChannelCapacity key = "channel-capacity" />)
 
   }

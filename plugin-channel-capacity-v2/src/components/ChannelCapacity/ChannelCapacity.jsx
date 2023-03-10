@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { withTheme } from '@twilio/flex-ui';
-import { Theme } from '@twilio-paste/core/theme';
+
 import { Button, Select, Option, Label, Flex, Box, Table, THead, TBody, Th, Tr, Td } from "@twilio-paste/core";
 
 import WorkerChannelsUtil from '../../utils/WorkerChannelsUtil';
-
-const PLUGIN_NAME = 'ChannelCapacityV2Plugin';
+import { PLUGIN_NAME } from '../../utils/constants';
 
 const ChannelCapacity = ({ worker }) => {
   const [changed, setChanged] = useState(false);
@@ -72,7 +70,6 @@ const ChannelCapacity = ({ worker }) => {
   const options = [0, 1, 2, 3, 4, 5];
 
   return (
-    <Theme.Provider theme="flex">
       <Flex vertical padding="space50" grow >
         <Box width="100%">
         <Table>
@@ -127,9 +124,8 @@ const ChannelCapacity = ({ worker }) => {
         </Table>
       </Box>
     </Flex>
-    </Theme.Provider >
   )
 
 }
 
-export default (withTheme(ChannelCapacity));
+export default ChannelCapacity;

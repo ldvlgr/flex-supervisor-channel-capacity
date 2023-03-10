@@ -1,6 +1,7 @@
 import { Manager } from '@twilio/flex-ui';
+import { PLUGIN_NAME } from './constants';
+
 const manager = Manager.getInstance();
-const PLUGIN_NAME = 'ChannelCapacityPlugin';
 
 class WorkerChannelsUtil {
 
