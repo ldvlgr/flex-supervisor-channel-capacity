@@ -8,7 +8,7 @@ Twilio Flex Plugins allow you to customize the appearance and behavior of [Twili
 ## How it works
 This Flex plugin adds a Channel Capacity coniguration section under the Skills panel on the Agent Profile window.  This feature enabled Supervisors to update the Agent's Chat and SMS Channel capacity from within Flex.
 
-<img width="700px" src="images/ChannelCapacityV2.png"/>
+<img width="700px" src="images/workerChannelCapacityV2.png"/>
 
 This plugin leverages Serverless functions to get the Worker Channels and to update the Worker Channel capacity.
 

@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
 
-import { Button, Select, Option, Label, Flex, Box, Table, THead, TBody, Th, Tr, Td } from "@twilio-paste/core";
+import { Button, Select, Option, Label, Flex, Box, Table, THead, TBody, Th, Tr, Td, Switch } from "@twilio-paste/core";
 
 import WorkerChannelsUtil from '../../utils/WorkerChannelsUtil';
 import { PLUGIN_NAME } from '../../utils/constants';
 
 const ChannelCapacity = ({ worker }) => {
   const [changed, setChanged] = useState(false);
+
+  const [voiceCapacity, setVoiceCapacity] = useState(0);
+  const [voiceChannelSid, setVoiceChannelSid] = useState('');
+  const [voiceAvailable, setVoiceAvailable] = useState(true);
+
   const [chatCapacity, setChatCapacity] = useState(0);
   const [chatChannelSid, setChatChannelSid] = useState('');
   const [chatAvailable, setChatAvailable] = useState(true);
+
   const [smsCapacity, setSmsCapacity] = useState(0);
   const [smsChannelSid, setSmsChannelSid] = useState('');
   const [smsAvailable, setSmsAvailable] = useState(true);
@@ -20,7 +26,11 @@ const ChannelCapacity = ({ worker }) => {
       let workerChannels = await WorkerChannelsUtil.getWorkerChannels(worker.sid);
       console.log(PLUGIN_NAME, 'workerChannels = ', workerChannels);
       workerChannels.forEach(wc => {
-        if (wc.taskChannelUniqueName == 'chat') {
+        if (wc.taskChannelUniqueName == 'voice') {
+          setVoiceChannelSid(wc.sid);
+          setVoiceCapacity(wc.configuredCapacity);
+          setVoiceAvailable(wc.available);
+        } else if (wc.taskChannelUniqueName == 'chat') {
           setChatChannelSid(wc.sid);
           setChatCapacity(wc.configuredCapacity);
           setChatAvailable(wc.available);
@@ -38,9 +48,11 @@ const ChannelCapacity = ({ worker }) => {
     const capacity = e.target.value;
     setChatCapacity(capacity);
     if (capacity == 0) {
+      //Auto disable
       setChatAvailable(false);
     } else {
-      setChatAvailable(true);
+      //Auto enable?
+      //setChatAvailable(true);
     }
   }
 
@@ -49,9 +61,24 @@ const ChannelCapacity = ({ worker }) => {
     const capacity = e.target.value;
     setSmsCapacity(capacity);
     if (capacity == 0) {
+      //Auto disable
       setSmsAvailable(false);
     } else {
-      setSmsAvailable(true);
+      //Auto enable?
+      //setSmsAvailable(true);
+    }
+  }
+
+  const handleVoiceChange = (e) => {
+    setChanged(true);
+    const capacity = e.target.value;
+    setVoiceCapacity(capacity);
+    if (capacity == 0) {
+      //Auto disable
+      setVoiceAvailable(false);
+    } else {
+      //Auto enable?
+      //setVoiceAvailable(true);
     }
   }
 
@@ -60,18 +87,18 @@ const ChannelCapacity = ({ worker }) => {
     //Only save if worker was selected
     if (workerSid) {
       console.log(PLUGIN_NAME, 'WorkerSid:', workerSid);
-      console.log(PLUGIN_NAME, 'Updating Chat Channel Capacity:', chatCapacity);
-      WorkerChannelsUtil.updateWorkerChannelCapacity(workerSid, chatChannelSid, chatCapacity);
-      console.log(PLUGIN_NAME, 'Updating SMS Channel Capacity:', smsCapacity);
-      WorkerChannelsUtil.updateWorkerChannelCapacity(workerSid, smsChannelSid, smsCapacity);
+      WorkerChannelsUtil.updateWorkerChannelCapacity(workerSid, voiceChannelSid, voiceCapacity, voiceAvailable);
+      WorkerChannelsUtil.updateWorkerChannelCapacity(workerSid, chatChannelSid, chatCapacity, chatAvailable);
+      WorkerChannelsUtil.updateWorkerChannelCapacity(workerSid, smsChannelSid, smsCapacity, smsAvailable);
 
     }
+    setChanged(false);
   }
   const options = [0, 1, 2, 3, 4, 5];
 
   return (
-      <Flex vertical padding="space50" grow >
-        <Box width="100%">
+    <Flex vertical padding="space50" grow >
+      <Box width="100%">
         <Table>
           <THead>
             <Tr>
@@ -80,8 +107,29 @@ const ChannelCapacity = ({ worker }) => {
             </Tr>
           </THead>
           <TBody>
+            <Tr key='voice'>
+              <Td>
+                <Switch checked={voiceAvailable} onChange={() => { setVoiceAvailable(!voiceAvailable); }} >
+                  <Label htmlFor="voiceCapacity"> Voice </Label>
+                </Switch>
+              </Td>
+              <Td>
+                <Select
+                  value={voiceCapacity}
+                  onChange={handleVoiceChange}
+                  id="voiceCapacity"
+                >
+                  <Option key="voiceOff" value={0}> 0 </Option>
+                  <Option key="voiceOn" value={1}> 1 </Option>
+                </Select>
+              </Td>
+            </Tr>
             <Tr key='chat'>
-              <Td> <Label htmlFor="chatCapacity"> Chat </Label></Td>
+              <Td>
+                <Switch checked={chatAvailable} onChange={() => { setChatAvailable(!chatAvailable); }} >
+                  <Label htmlFor="chatCapacity"> Chat </Label>
+                </Switch>
+              </Td>
               <Td>
                 <Select
                   value={chatCapacity}
@@ -95,7 +143,11 @@ const ChannelCapacity = ({ worker }) => {
               </Td>
             </Tr>
             <Tr key='sms'>
-              <Td> <Label htmlFor="smsCapacity"> SMS </Label></Td>
+              <Td>
+                <Switch checked={smsAvailable} onChange={() => { setSmsAvailable(!smsAvailable); }} >
+                  <Label htmlFor="smsCapacity"> SMS </Label>
+                </Switch>
+              </Td>
               <Td>
                 <Select
                   value={smsCapacity}

@@ -30,7 +30,7 @@ exports.handler = TokenValidator(async function(context, event, callback) {
   let workerChannel = await client.taskrouter.workspaces(context.TWILIO_WORKSPACE_SID)
     .workers(event.workerSid)
     .workerChannels(event.workerChannelSid)
-    .update({capacity: event.capacity});
+    .update({capacity: event.capacity, available: event.available});
 
   response.setBody(workerChannel);
   return callback(null, response);

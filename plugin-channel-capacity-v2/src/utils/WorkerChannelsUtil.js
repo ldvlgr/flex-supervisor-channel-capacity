@@ -32,7 +32,7 @@ class WorkerChannelsUtil {
     return workerChannels;
   }
 
-  updateWorkerChannelCapacity = async (workerSid, workerChannelSid, capacity) => {
+  updateWorkerChannelCapacity = async (workerSid, workerChannelSid, capacity, available) => {
 
     console.debug('Updating worker channel', workerChannelSid, 'for worker', workerSid);
     const fetchUrl = `${process.env.FLEX_APP_FUNCTIONS_BASE}/setWorkerChannelCapacity`;
@@ -41,7 +41,8 @@ class WorkerChannelsUtil {
       Token: manager.store.getState().flex.session.ssoTokenPayload.token,
       workerSid,
       workerChannelSid,
-      capacity
+      capacity, 
+      available
     };
     console.log('Update worker channel with payload: ', fetchBody);
     const fetchOptions = {
